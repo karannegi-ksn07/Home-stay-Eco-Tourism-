@@ -1,7 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@config "../tailwind.config.js";
+@import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
 @layer base {
   html {
     @apply scroll-smooth;
@@ -11,3 +11,4 @@
     @apply min-h-screen bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100;
   }
 }
+
