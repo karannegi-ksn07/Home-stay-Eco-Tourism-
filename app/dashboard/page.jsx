@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button, Input, Modal, Loader, useToast } from "@/components/ui";
+import { useAuth } from "@/components/AuthContext";
+import { useRouter } from "next/navigation";
 
 const mockBookings = [
   { id: "BK-209", guest: "Aria Sharma", homestay: "Himalayan Village Retreat", dates: "Jun 24 - Jun 28", status: "Confirmed" },
@@ -13,11 +15,13 @@ const mockBookings = [
 
 export default function DashboardPage() {
   const { showToast } = useToast();
+  const { token, loading, logout } = useAuth();
+  const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const [bookings] = useState(mockBookings);
+  const [dashboardMessage, setDashboardMessage] = useState("");
 
   const [newHomestay, setNewHomestay] = useState({
     name: "",
@@ -27,8 +31,41 @@ export default function DashboardPage() {
 
   const [homestays, setHomestays] = useState([]);
 
-  // ✅ FETCH BACKEND DATA (VISIBLE IN NETWORK TAB)
+  // Check auth status
   useEffect(() => {
+    if (!loading && !token) {
+      router.push("/login");
+    }
+  }, [token, loading, router]);
+
+  // Fetch protected dashboard info
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch("http://localhost:5000/api/user/dashboard", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        if (data.success) {
+          setDashboardMessage(data.message);
+        } else {
+          logout();
+        }
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      }
+    };
+    if (token) {
+      fetchDashboardData();
+    }
+  }, [token, logout]);
+
+  // FETCH BACKEND DATA (VISIBLE IN NETWORK TAB)
+  useEffect(() => {
+    if (!token) return;
     console.log("API CALL STARTED");
 
     fetch("http://localhost:5000/api/homestays")
@@ -44,7 +81,7 @@ export default function DashboardPage() {
         console.log("FETCH ERROR:", err);
         showToast("Failed to load homestays", "error");
       });
-  }, [showToast]);
+  }, [showToast, token]);
 
   const simulateLoading = () => {
     setIsLoading(true);
@@ -55,6 +92,7 @@ export default function DashboardPage() {
       showToast("Updated successfully!", "success");
     }, 1500);
   };
+
 
   const handleCreateListing = async (e) => {
     e.preventDefault();
@@ -133,14 +171,20 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {dashboardMessage && (
+            <div className="mb-6 rounded-xl bg-green-50 p-4 text-sm text-green-700 dark:bg-green-950/30 dark:text-green-400 border border-green-200/50 dark:border-green-900/50">
+              🔒 <strong>Secure Token-Authorized Backend Connection:</strong> {dashboardMessage}
+            </div>
+          )}
+
           {/* BOOKINGS TABLE */}
-          <div className="bg-white rounded-xl border shadow-sm">
-            <div className="p-4 border-b font-semibold">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div className="p-4 border-b border-gray-200 font-semibold dark:border-gray-800">
               Recent Bookings
             </div>
 
             <table className="w-full text-sm">
-              <thead className="text-left text-gray-500">
+              <thead className="text-left text-gray-500 dark:text-gray-400">
                 <tr>
                   <th className="p-3">ID</th>
                   <th className="p-3">Guest</th>
@@ -152,7 +196,7 @@ export default function DashboardPage() {
 
               <tbody>
                 {bookings.map((b) => (
-                  <tr key={b.id} className="border-t">
+                  <tr key={b.id} className="border-t border-gray-200 dark:border-gray-800">
                     <td className="p-3">{b.id}</td>
                     <td className="p-3">{b.guest}</td>
                     <td className="p-3">{b.homestay}</td>

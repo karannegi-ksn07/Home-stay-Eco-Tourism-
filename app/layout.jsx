@@ -1,6 +1,7 @@
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastProvider } from "@/components/ui";
+import { AuthProvider } from "@/components/AuthContext";
 
 export const metadata = {
   title: "EcoStay — Homestay & Eco-Tourism",
@@ -12,9 +13,12 @@ export default function RootLayout({ children }) {
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col overflow-x-hidden">
         <ThemeProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <AuthProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

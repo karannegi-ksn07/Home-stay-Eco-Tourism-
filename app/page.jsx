@@ -15,14 +15,14 @@ const featuredHomestays = [
     title: "Kerala Backwater Eco-Home",
     description:
       "Experience serene backwater life with organic meals, canoe rides, and sustainable living practices.",
-    image: "https://images.unsplash.com/photo-1602002418080-a3aac4ba8a39?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=800&q=80",
     imageAlt: "Kerala backwater homestay surrounded by greenery",
   },
   {
     title: "Rajasthan Desert Camp",
     description:
       "Stay under starlit skies in a desert camp with local folk music, camel safaris, and authentic Rajasthani cuisine.",
-    image: "https://images.unsplash.com/photo-1451337516015-6b65e2042cba?w=800&q=80",
+    image:  "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&q=80",
     imageAlt: "Desert camp homestay in Rajasthan",
   },
 ];

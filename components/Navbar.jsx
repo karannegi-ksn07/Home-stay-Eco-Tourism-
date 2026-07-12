@@ -4,18 +4,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useTheme } from "@/components/ThemeProvider";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/login", label: "Login" },
-];
+import { useAuth } from "@/components/AuthContext";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { theme } = useTheme();
+  const { token, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Dynamic Navigation Links
+  const links = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+  ];
+
+  if (token) {
+    links.push({ href: "/dashboard", label: "Dashboard" });
+    links.push({ href: "/profile", label: "Profile" });
+  } else {
+    links.push({ href: "/login", label: "Login" });
+    links.push({ href: "/signup", label: "Signup" });
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/90">
@@ -30,8 +39,9 @@ export default function Navbar() {
           <span>EcoStay</span>
         </Link>
 
+        {/* Desktop Links */}
         <div className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -45,10 +55,18 @@ export default function Navbar() {
             </Link>
           ))}
 
+          {token && (
+            <button
+              onClick={logout}
+              className="text-sm font-medium text-red-600 hover:text-red-500 transition-colors cursor-pointer"
+            >
+              Logout
+            </button>
+          )}
         </div>
 
+        {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 md:hidden">
-
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -66,10 +84,11 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Mobile Drawer */}
       {menuOpen && (
         <div className="border-t border-gray-200 px-4 py-4 md:hidden dark:border-gray-800">
           <div className="flex flex-col gap-3">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -83,9 +102,22 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {token && (
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  logout();
+                }}
+                className="text-left rounded-lg px-3 py-2 text-sm font-medium text-red-650 hover:bg-red-50/50 dark:hover:bg-red-950/20"
+              >
+                Logout
+              </button>
+            )}
           </div>
         </div>
       )}
     </header>
   );
 }
+
