@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
 const rateLimit = require("express-rate-limit");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 // console.log("MONGO_URI:", process.env.MONGO_URI);
 
@@ -15,6 +16,7 @@ require("./config/passport");
 const homestayRoutes = require("./routes/homestayRoutes");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 const { errorHandler, notFoundHandler } = require("./middleware/errorHandler");
 
 const app = express();
@@ -57,6 +59,7 @@ app.get("/", (req, res) => {
 app.use("/api/homestays", homestayRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/ai", aiRoutes);
 
 // NOT FOUND HANDLER
 app.use(notFoundHandler);

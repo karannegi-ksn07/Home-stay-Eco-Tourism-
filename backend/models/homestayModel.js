@@ -17,6 +17,16 @@ const homestaySchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0
+    },
+    description: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    contact: {
+      type: String,
+      trim: true,
+      default: ""
     }
   },
   {
