@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 const AuthContext = createContext();
@@ -23,27 +23,15 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  // Listen for OAuth token in URL query params
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlToken = urlParams.get("token");
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setToken(null);
+    setUser(null);
+    router.push("/login");
+  }, [router]);
 
-      if (urlToken) {
-        localStorage.setItem("token", urlToken);
-        setToken(urlToken);
-
-        // Fetch user profile immediately
-        fetchUserProfile(urlToken);
-
-        // Clean up url parameters to prevent token remaining in browser URL bar
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-      }
-    }
-  }, []);
-
-  const fetchUserProfile = async (authToken) => {
+  const fetchUserProfile = useCallback(async (authToken) => {
     try {
       const res = await fetch("http://localhost:5000/api/user/profile", {
         headers: {
@@ -62,9 +50,29 @@ export function AuthProvider({ children }) {
       console.error("Error fetching user profile:", err);
       logout();
     }
-  };
+  }, [router, logout]);
 
-  const login = async (email, password) => {
+  // Listen for OAuth token in URL query params
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get("token");
+
+      if (urlToken) {
+        localStorage.setItem("token", urlToken);
+        setToken(urlToken);
+
+        // Fetch user profile immediately
+        fetchUserProfile(urlToken);
+
+        // Clean up url parameters to prevent token remaining in browser URL bar
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }, [fetchUserProfile]);
+
+  const login = useCallback(async (email, password) => {
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -89,9 +97,9 @@ export function AuthProvider({ children }) {
     } catch (err) {
       return { success: false, error: err.message };
     }
-  };
+  }, []);
 
-  const register = async (name, email, password) => {
+  const register = useCallback(async (name, email, password) => {
     try {
       const res = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
@@ -111,15 +119,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       return { success: false, error: err.message };
     }
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setToken(null);
-    setUser(null);
-    router.push("/login");
-  };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
