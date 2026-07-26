@@ -9,7 +9,7 @@ import Image from "next/image";
  * @param {string} [props.image] - Optional image URL
  * @param {string} [props.imageAlt] - Alt text for the image
  */
-export default function Card({ title, description, image, imageAlt = "Card image" }) {
+export default function Card({ title, description, image, imageAlt = "Card image", children }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
       {image && (
@@ -28,6 +28,7 @@ export default function Card({ title, description, image, imageAlt = "Card image
         <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-600 sm:text-base dark:text-gray-400">
           {description}
         </p>
+        {children && <div className="mt-4">{children}</div>}
       </div>
     </article>
   );
