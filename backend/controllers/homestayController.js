@@ -28,7 +28,7 @@ const getHomestayById = async (req, res, next) => {
 // CREATE
 const createHomestay = async (req, res, next) => {
   try {
-    console.log("BODY RECEIVED:", req.body);
+    
     const homestayData = {
       ...req.body,
       createdBy: req.user._id,

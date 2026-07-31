@@ -17,7 +17,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/homestays");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/homestays`);
         if (!res.ok) throw new Error("Failed to load featured homestays");
         const data = await res.json();
         // Since all seeded data are Uttarakhand locations, take the first 3

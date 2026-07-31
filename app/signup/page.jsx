@@ -28,7 +28,7 @@ export default function SignupPage() {
   const handleSignup = async (e) => {
     
     e.preventDefault();
-    console.log("SIGNUP BUTTON CLICKED");
+    
     
     // Clear previous errors
     const newErrors = { name: "", email: "", password: "" };

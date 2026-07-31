@@ -127,7 +127,7 @@ export default function LoginPage() {
               type="button"
               className="w-full py-2.5 flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-800"
               onClick={() => {
-                window.location.href = "http://localhost:5000/api/auth/google";
+                window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`;
               }}
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">

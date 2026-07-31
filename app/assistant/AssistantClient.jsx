@@ -44,7 +44,7 @@ export default function AssistantClient() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/ai/homestay-assistant", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ai/homestay-assistant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

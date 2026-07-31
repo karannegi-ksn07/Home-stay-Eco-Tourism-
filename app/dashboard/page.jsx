@@ -46,7 +46,7 @@ export default function DashboardPage() {
     if (!token) return;
     setFetching(true);
     try {
-      const res = await fetch("http://localhost:5000/api/homestays/my-listings", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/homestays/my-listings`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -117,7 +117,7 @@ export default function DashboardPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch("http://localhost:5000/api/homestays", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/homestays`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -168,7 +168,7 @@ export default function DashboardPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/homestays/${selectedHomestay._id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/homestays/${selectedHomestay._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -206,7 +206,7 @@ export default function DashboardPage() {
   const handleDeleteListing = async () => {
     setSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/homestays/${selectedHomestay._id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/homestays/${selectedHomestay._id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
