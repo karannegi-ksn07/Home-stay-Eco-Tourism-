@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EcoStay — Homestay & Eco-Tourism Platform
 
-## Getting Started
+EcoStay is a full-stack homestay and eco-tourism platform focused on promoting authentic stays across Uttarakhand. The platform allows users to explore homestays, create their own listings, manage properties, authenticate securely, and interact with an AI-powered travel assistant.
 
-First, run the development server:
+Built as an internship project at TBI GEU.
+
+---
+
+# Live Deployment
+
+Frontend:
+https://home-stay-eco-tourism.vercel.app
+
+Backend API:
+https://ecostay-backend-1zgs.onrender.com
+
+---
+
+# Features
+
+## User Authentication
+- User registration and login
+- Secure password hashing using bcrypt
+- JWT-based authentication
+- Google OAuth login integration
+- Protected routes and user sessions
+
+## Homestay Management
+- Browse Uttarakhand homestays
+- View homestay details
+- Create new listings
+- Update existing listings
+- Delete owned listings
+- User-specific dashboard
+
+## AI Travel Assistant
+- Gemini-powered chatbot
+- Provides Uttarakhand travel recommendations
+- Uses real homestay database information
+- Prevents unsupported recommendations using context-based prompting
+
+## UI & User Experience
+- Responsive design
+- Light/Dark theme support
+- Custom reusable components
+- Loading states
+- Error handling pages
+- Mobile-friendly interface
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- Context API
+- React Markdown
+
+## Backend
+
+- Node.js
+- Express.js
+- Mongoose ODM
+
+## Database
+
+- MongoDB Atlas
+
+## Authentication
+
+- JWT
+- bcrypt
+- Passport Google OAuth
+
+## Artificial Intelligence
+
+- Google Gemini API
+
+---
+
+# Project Architecture
+
+EcoStay
+
+├── app/
+│ ├── pages and frontend routes
+│
+├── components/
+│ ├── reusable UI components
+│ ├── authentication context
+│
+├── backend/
+│ ├── controllers/
+│ ├── models/
+│ ├── routes/
+│ ├── middleware/
+│ └── config/
+│
+└── package.json
+
+
+---
+
+# Local Setup
+
+## Clone Repository
 
 ```bash
+git clone https://github.com/karannegi-ksn07/Home-stay-Eco-Tourism-
+
+
+---
+
+# Frontend Setup
+
+## Install dependencies:
+
+npm install
+
+## Run frontend:
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Backend Setup
+cd backend
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Install dependencies:
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Start Backend 
+npm start
 
-## Learn More
+## Database 
+## MongoDB Atlas is used with Mongoose ODM. 
 
-To learn more about Next.js, take a look at the following resources:
+Homestay Schema:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+name
+location
+price
+description
+contact
+image
+createdBy
+createdAt
+updatedAt
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment 
+
+## Frontend:
+Deployed using Vercel
+
+## Backend:
+Deployed using Render
+
+## Database:
+Hosted using MongoDB Atlas
+
+Production environment variables are configured through deployment dashboards.
+
+# Free Tier Limitations
+Render free instances may sleep after inactivity.
+First backend request after inactivity may take additional time.
+MongoDB Atlas free tier has limited storage and resources.
+
+# Future Improvements
+Real booking and payment system
+User reviews and ratings
+Image upload storage
+Advanced recommendation system
+Admin dashboard
