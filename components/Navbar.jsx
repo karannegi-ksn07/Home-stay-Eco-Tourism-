@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthContext";
 import { useToast } from "@/components/ui";
@@ -13,11 +13,12 @@ export default function Navbar() {
   const { token, logout } = useAuth();
   const { showToast } = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   // Dynamic Navigation Links
   const links = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
+    { href: "/#about", label: "About" },
     { href: "/assistant", label: "Assistant" },
   ];
 
@@ -28,6 +29,75 @@ export default function Navbar() {
     links.push({ href: "/login", label: "Login" });
     links.push({ href: "/signup", label: "Signup" });
   }
+
+  // Active section tracker using Intersection Observer
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const sectionIds = ["home", "featured-homestays", "about"];
+    const observerOptions = {
+      root: null,
+      rootMargin: "-25% 0px -55% 0px", // Trigger when section is in standard reading zone
+      threshold: 0.08,
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sectionIds.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+
+    return () => {
+      sectionIds.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) observer.unobserve(element);
+      });
+    };
+  }, [pathname]);
+
+  const handleLinkClick = (e, href) => {
+    if (pathname === "/") {
+      if (href === "/#about") {
+        e.preventDefault();
+        const element = document.getElementById("about");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(null, "", href);
+        }
+      } else if (href === "/") {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.pushState(null, "", "/");
+      }
+    }
+  };
+
+  const handleMobileLinkClick = (e, href) => {
+    setMenuOpen(false);
+    if (pathname === "/") {
+      if (href === "/#about") {
+        e.preventDefault();
+        const element = document.getElementById("about");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(null, "", href);
+        }
+      } else if (href === "/") {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.pushState(null, "", "/");
+      }
+    }
+  };
 
   const handleThemeToggle = () => {
     const newTheme = toggleTheme();
@@ -40,11 +110,12 @@ export default function Navbar() {
         <Link
           href="/"
           className="flex items-center gap-2 text-lg font-bold text-primary-700 dark:text-primary-400 hover:opacity-90 transition-opacity"
+          onClick={(e) => handleLinkClick(e, "/")}
         >
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-sm text-white shadow-sm shadow-primary-500/50">
             E
           </span>
-          <span className="bg-gradient-to-r from-primary-700 to-emerald-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-emerald-400">
+          <span className="bg-gradient-to-r from-primary-700 to-emerald-600 bg-clip-text text-transparent dark:from-primary-400 dark:to-emerald-400 font-serif">
             EcoStay
           </span>
         </Link>
@@ -52,14 +123,26 @@ export default function Navbar() {
         {/* Desktop Links & Action Buttons */}
         <div className="hidden items-center gap-5 md:flex">
           {links.map((link) => {
-            const isActive = pathname === link.href;
+            const isHome = pathname === "/";
+            let isActive = false;
+            if (isHome) {
+              if (link.href === "/" && (activeSection === "home" || activeSection === "featured-homestays" || activeSection === "")) {
+                isActive = true;
+              } else if (link.href === "/#about" && activeSection === "about") {
+                isActive = true;
+              }
+            } else {
+              isActive = pathname === link.href;
+            }
+
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-1 py-1 text-sm font-medium transition-colors hover:text-primary-650 dark:hover:text-primary-400 ${
+                onClick={(e) => handleLinkClick(e, link.href)}
+                className={`relative px-1 py-1 text-sm font-semibold transition-colors hover:text-primary-650 dark:hover:text-primary-400 ${
                   isActive
-                    ? "text-primary-650 dark:text-primary-400 font-semibold"
+                    ? "text-primary-650 dark:text-primary-400"
                     : "text-gray-650 dark:text-gray-300"
                 }`}
               >
@@ -93,7 +176,7 @@ export default function Navbar() {
           {token && (
             <button
               onClick={logout}
-              className="text-sm font-medium text-red-650 hover:text-red-500 transition-colors cursor-pointer ml-1"
+              className="text-sm font-semibold text-red-650 hover:text-red-500 transition-colors cursor-pointer ml-1"
             >
               Logout
             </button>
@@ -140,15 +223,26 @@ export default function Navbar() {
         <div className="border-t border-gray-200 px-4 py-4 md:hidden dark:border-gray-800/80 bg-white dark:bg-gray-950">
           <div className="flex flex-col gap-2">
             {links.map((link) => {
-              const isActive = pathname === link.href;
+              const isHome = pathname === "/";
+              let isActive = false;
+              if (isHome) {
+                if (link.href === "/" && (activeSection === "home" || activeSection === "featured-homestays" || activeSection === "")) {
+                  isActive = true;
+                } else if (link.href === "/#about" && activeSection === "about") {
+                  isActive = true;
+                }
+              } else {
+                isActive = pathname === link.href;
+              }
+
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+                  onClick={(e) => handleMobileLinkClick(e, link.href)}
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all ${
                     isActive
-                      ? "bg-primary-50 text-primary-700 dark:bg-primary-950/40 dark:text-primary-400 font-semibold"
+                      ? "bg-primary-50 text-primary-700 dark:bg-primary-950/40 dark:text-primary-400"
                       : "text-gray-650 hover:bg-gray-55 dark:text-gray-300 dark:hover:bg-gray-900"
                   }`}
                 >
@@ -163,7 +257,7 @@ export default function Navbar() {
                   setMenuOpen(false);
                   logout();
                 }}
-                className="text-left rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50/50 dark:text-red-400 dark:hover:bg-red-950/20 cursor-pointer"
+                className="text-left rounded-lg px-3 py-2 text-sm font-semibold text-red-650 hover:bg-red-50/50 dark:text-red-450 dark:hover:bg-red-950/20 cursor-pointer"
               >
                 Logout
               </button>
@@ -174,5 +268,3 @@ export default function Navbar() {
     </header>
   );
 }
-
-

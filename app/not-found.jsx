@@ -15,7 +15,7 @@ export default function NotFound() {
           <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white">404</h1>
           <h2 className="mt-2 text-xl font-bold text-gray-800 dark:text-gray-200">Lost in the Mountains?</h2>
           <p className="mt-4 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-            The page you are looking for has taken a trail less traveled or doesn't exist. Let's guide you back to safety.
+            The page you are looking for has taken a trail less traveled or doesn&apos;t exist. Let&apos;s guide you back to safety.
           </p>
 
           <div className="mt-8 flex justify-center gap-4">

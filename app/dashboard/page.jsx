@@ -42,9 +42,11 @@ export default function DashboardPage() {
   }, [token, loading, router]);
 
   // Fetch only current user's listings
-  const fetchMyListings = useCallback(async () => {
+  const fetchMyListings = useCallback(async (isRefresh = false) => {
     if (!token) return;
-    setFetching(true);
+    if (isRefresh) {
+      setFetching(true);
+    }
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/homestays/my-listings`, {
         headers: {
@@ -68,7 +70,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (token) {
-      fetchMyListings();
+      queueMicrotask(() => {
+        fetchMyListings();
+      });
     }
   }, [token, fetchMyListings]);
 
@@ -254,7 +258,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex gap-3">
-              <Button variant="secondary" onClick={fetchMyListings} disabled={fetching}>
+              <Button variant="secondary" onClick={() => fetchMyListings(true)} disabled={fetching}>
                 {fetching ? <Loader size="sm" /> : "Refresh"}
               </Button>
 
@@ -541,7 +545,7 @@ export default function DashboardPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-gray-650 dark:text-gray-400">
-            Are you sure you want to delete <span className="font-bold text-gray-900 dark:text-white">"{selectedHomestay?.name}"</span>?
+            Are you sure you want to delete <span className="font-bold text-gray-900 dark:text-white">&quot;{selectedHomestay?.name}&quot;</span>?
             This action is permanent and cannot be undone.
           </p>
           <div className="flex justify-end gap-3 pt-2">

@@ -17,10 +17,23 @@ export function AuthProvider({ children }) {
     const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        queueMicrotask(() => {
+          setToken(storedToken);
+          setUser(parsedUser);
+          setLoading(false);
+        });
+        return;
+      } catch (err) {
+        console.error("Failed to parse stored user session data:", err);
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
     }
-    setLoading(false);
+    queueMicrotask(() => {
+      setLoading(false);
+    });
   }, []);
 
   const logout = useCallback(() => {
@@ -60,10 +73,11 @@ export function AuthProvider({ children }) {
 
       if (urlToken) {
         localStorage.setItem("token", urlToken);
-        setToken(urlToken);
-
-        // Fetch user profile immediately
-        fetchUserProfile(urlToken);
+        queueMicrotask(() => {
+          setToken(urlToken);
+          // Fetch user profile immediately
+          fetchUserProfile(urlToken);
+        });
 
         // Clean up url parameters to prevent token remaining in browser URL bar
         const newUrl = window.location.pathname;

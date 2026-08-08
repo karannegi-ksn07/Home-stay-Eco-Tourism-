@@ -1,4 +1,14 @@
 const Homestay = require("../models/homestayModel");
+const { z } = require("zod");
+
+const homestayValidationSchema = z.object({
+  name: z.string().min(1, "Name is required").trim(),
+  location: z.string().min(1, "Location is required").trim(),
+  price: z.number().min(0, "Price must be a positive number"),
+  description: z.string().trim().default(""),
+  contact: z.string().trim().default(""),
+  image: z.string().trim().default(""),
+});
 
 // GET ALL
 const getAllHomestays = async (req, res, next) => {
@@ -28,9 +38,15 @@ const getHomestayById = async (req, res, next) => {
 // CREATE
 const createHomestay = async (req, res, next) => {
   try {
-    
+    const parsed = homestayValidationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        message: parsed.error.errors[0].message
+      });
+    }
+
     const homestayData = {
-      ...req.body,
+      ...parsed.data,
       createdBy: req.user._id,
     };
     const data = await Homestay.create(homestayData);
@@ -43,6 +59,13 @@ const createHomestay = async (req, res, next) => {
 // UPDATE
 const updateHomestay = async (req, res, next) => {
   try {
+    const parsed = homestayValidationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        message: parsed.error.errors[0].message
+      });
+    }
+
     const homestay = await Homestay.findById(req.params.id);
     if (!homestay) {
       return res.status(404).json({ message: "Homestay listing not found" });
@@ -55,7 +78,7 @@ const updateHomestay = async (req, res, next) => {
 
     const data = await Homestay.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      parsed.data,
       { new: true, runValidators: true }
     );
     res.json(data);

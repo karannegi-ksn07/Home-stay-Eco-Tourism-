@@ -100,7 +100,7 @@ const login = async (req, res, next) => {
     // Generate JWT
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET || "fallback_secret",
+      process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
     );
 

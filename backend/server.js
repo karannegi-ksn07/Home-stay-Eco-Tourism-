@@ -5,6 +5,11 @@ const rateLimit = require("express-rate-limit");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
+if (!process.env.JWT_SECRET) {
+  console.error("FATAL ERROR: JWT_SECRET is not defined in the environment variables.");
+  process.exit(1);
+}
+
 // console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const connectDB = require("./config/db");

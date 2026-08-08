@@ -16,8 +16,6 @@ export function ThemeProvider({ children }) {
     const storedTheme = localStorage.getItem("theme");
     const systemThemeMatches = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const initialTheme = storedTheme || (systemThemeMatches ? "dark" : "light");
-
-    setTheme(initialTheme);
     
     const root = document.documentElement;
     if (initialTheme === "dark") {
@@ -25,7 +23,11 @@ export function ThemeProvider({ children }) {
     } else {
       root.classList.remove("dark");
     }
-    setMounted(true);
+
+    queueMicrotask(() => {
+      setTheme(initialTheme);
+      setMounted(true);
+    });
   }, []);
 
   const toggleTheme = () => {

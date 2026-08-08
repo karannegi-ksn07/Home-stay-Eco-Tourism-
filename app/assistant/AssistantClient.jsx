@@ -24,6 +24,7 @@ export default function AssistantClient() {
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
   const messagesEndRef = useRef(null);
+  const messageIdRef = useRef(0);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -33,9 +34,12 @@ export default function AssistantClient() {
   const triggerSendMessage = async (textToSend) => {
     if (!textToSend.trim()) return;
 
+    messageIdRef.current += 1;
+    const userMsgId = `msg-user-${messageIdRef.current}`;
+
     // Append user message
     const userMsg = {
-      id: Date.now().toString(),
+      id: userMsgId,
       text: textToSend,
       sender: "user",
       time: new Date(),
@@ -54,11 +58,14 @@ export default function AssistantClient() {
 
       const data = await response.json();
 
+      messageIdRef.current += 1;
+      const botMsgId = `msg-bot-${messageIdRef.current}`;
+
       if (response.ok && data.success) {
         setMessages((prev) => [
           ...prev,
           {
-            id: (Date.now() + 1).toString(),
+            id: botMsgId,
             text: data.reply,
             sender: "bot",
             time: new Date(),
@@ -69,7 +76,7 @@ export default function AssistantClient() {
         setMessages((prev) => [
           ...prev,
           {
-            id: (Date.now() + 1).toString(),
+            id: botMsgId,
             text: `⚠️ **Error:** ${errorMsg}`,
             sender: "bot",
             time: new Date(),
@@ -80,10 +87,12 @@ export default function AssistantClient() {
       }
     } catch (err) {
       console.error("Fetch error:", err);
+      messageIdRef.current += 1;
+      const errorMsgId = `msg-err-${messageIdRef.current}`;
       setMessages((prev) => [
         ...prev,
         {
-          id: (Date.now() + 1).toString(),
+          id: errorMsgId,
           text: "⚠️ **Connection Error:** Could not connect to the AI service. Please verify that the backend server is running and try again.",
           sender: "bot",
           time: new Date(),

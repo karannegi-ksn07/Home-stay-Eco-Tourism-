@@ -1,33 +1,58 @@
+import Image from "next/image";
 import { Button } from "@/components/ui";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-emerald-50 px-4 py-16 sm:px-6 sm:py-24 lg:px-8 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900">
+    <section id="home" className="scroll-mt-20 relative overflow-hidden bg-gradient-to-br from-primary-50/70 via-white to-emerald-50/50 px-4 py-12 sm:px-6 lg:px-8 lg:py-20 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 border-b border-gray-150/50 dark:border-gray-900">
       <div className="mx-auto max-w-7xl">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl md:text-5xl lg:text-6xl dark:text-white">
-            Sustainable Rural Tourism
-          </h1>
-          <p className="mt-3 text-xl font-medium text-primary-700 dark:text-primary-400 sm:text-2xl">
-            Discover Authentic Homestays in Nature
-          </p>
-          <p className="mt-6 text-base leading-relaxed text-gray-600 sm:text-lg md:text-xl dark:text-gray-300">
-            Connect with rural hosts, experience eco-friendly travel, and support local communities
-            through meaningful homestay stays across India.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button variant="primary" size="lg">
-              Explore Homestays
-            </Button>
-            <Button variant="outline" size="lg">
-              Learn More
-            </Button>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="text-left space-y-6">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200/80 bg-emerald-50 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-sm">
+              <span className="text-emerald-600 dark:text-emerald-400">🌿</span> Authentic & Sustainable
+            </span>
+            <h1 className="font-serif text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl dark:text-white leading-tight">
+              Experience the Soul of <span className="bg-gradient-to-r from-primary-700 to-emerald-600 bg-clip-text text-transparent dark:from-primary-450 dark:to-emerald-450">Uttarakhand</span>
+            </h1>
+            <p className="text-base sm:text-lg leading-relaxed text-gray-600 dark:text-gray-300 max-w-xl">
+              Stay with local families in handpicked, sustainable homestays across Devbhoomi. Connect with rural hosts, experience authentic cuisine, and support local mountain communities.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Button
+                variant="primary"
+                size="lg"
+                className="shadow-sm shadow-primary-500/10 hover:shadow-md hover:shadow-primary-500/20 active:scale-[0.98] transition-all"
+                onClick={() => {
+                  const el = document.getElementById("featured-homestays");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Explore Homestays
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="active:scale-[0.98] transition-all"
+                onClick={() => {
+                  const el = document.getElementById("about");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                Learn More
+              </Button>
+            </div>
+          </div>
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-gray-200/50 shadow-md dark:border-gray-800 dark:shadow-none sm:aspect-[16/10] lg:aspect-square">
+            <Image
+              src="/images/hero_uttarakhand.png"
+              alt="Cozy Uttarakhand cottage in the lush green hills"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+            />
           </div>
         </div>
       </div>
-
-      <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary-200/40 blur-3xl dark:bg-primary-800/20" />
-      <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-emerald-200/40 blur-3xl dark:bg-emerald-800/20" />
     </section>
   );
 }
